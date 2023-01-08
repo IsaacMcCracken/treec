@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "types.h"
+#include <types.h>
 
 char* open_file(const char* path);
 
