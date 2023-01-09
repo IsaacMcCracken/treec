@@ -2,12 +2,16 @@
 #include <stdlib.h>
 #include <types.h>
 
+#include "frontend.h"
+
+
 char* open_file(const char* path);
 
 int main(int argc, const char** argv) {
     char* source = NULL;
     if (argc != 0) {
         source = open_file(argv[1]);
+        tokenize(source);
         printf("%s\n", source);
     } else {
         fprintf(stderr, "No input files: bro :(\n");

@@ -1,5 +1,5 @@
-#ifndef TYPES_H
-#define TYPES_H
+#ifndef TREE_TYPES_H
+#define TREE_TYPES_H
 
 #include <stdbool.h>
 
@@ -17,4 +17,4 @@ typedef float F32;
 typedef double F64;
 
 
-#endif // TYPES_H
+#endif // TREE_TYPES_H
