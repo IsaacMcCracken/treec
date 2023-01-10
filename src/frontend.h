@@ -6,6 +6,6 @@ typedef void* ASTnode;
 void tokenize(char* source);
 
 ASTnode binary_expression();
-void ast_print(ASTnode head);
-U32 ast_interpert(ASTnode root);
+void ast_print(ASTnode root);
+U32 ast_interpret(ASTnode root, U16 depth);
 #endif // FRONTEND_EXTERNAL
