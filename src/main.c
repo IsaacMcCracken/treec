@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <types.h>
+#include <tree_types.h>
 
 #include "frontend.h"
 
+#define _CRT_SECURE_NO_WARNINGS
 
 char* open_file(const char* path);
 
@@ -12,7 +13,9 @@ int main(int argc, const char** argv) {
     if (argc != 0) {
         source = open_file(argv[1]);
         tokenize(source);
-        printf("%s\n", source);
+        ASTnode head = binary_expression();
+        ast_interpert(head);
+
     } else {
         fprintf(stderr, "No input files: bro :(\n");
     }
@@ -44,7 +47,7 @@ char* open_file(const char* path) {
     }
 
     text_buffer[bytesRead] = '\0';
-    printf("BYTES READ: %zu\n", bytesRead);
+    // printf("BYTES READ: %zu\n", bytesRead);
     fclose(file);
     return text_buffer;
 }
