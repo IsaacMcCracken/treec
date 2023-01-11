@@ -13,9 +13,7 @@ int main(int argc, const char** argv) {
     if (argc != 0) {
         source = open_file(argv[1]);
         tokenize(source);
-        ASTnode head = binary_expression();
-        U32 num = ast_interpret(head, 0);
-        printf("%s = %lu", source, num);
+
 
 
     } else {
