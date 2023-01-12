@@ -55,6 +55,7 @@ static ASTnode astnode_primary_factor() {
     switch (tokens.type[current_token]) {
     case TOK_INT_LITERAL:
         result = astnode_create_leaf(AST_INT_LITERAL, parse_slice_to_int(current_token));
+        printf("%lu\n", result->value);
         return result;
     default:
         fprintf(stderr, "Syntax error on line: %lu", tokens.line[current_token]);
@@ -64,7 +65,10 @@ static ASTnode astnode_primary_factor() {
 }
 
 ASTnode binary_expression() {
-    ASTnode result = NULL, left = NULL, right = NULL;
+    ASTnode parent = NULL;
+    ASTnode left = NULL;
+    ASTnode right = NULL;
+
     U8 node_type = 255;
     // printf("We are on token %lu...\n", current_token);
     left = astnode_primary_factor();
@@ -78,8 +82,8 @@ ASTnode binary_expression() {
 
     right = binary_expression();
 
-    result = astnode_create(node_type, 0, left, right);
-    return result;
+    parent = astnode_create(node_type, 0, left, right);
+    return parent;
 }
 
 U32 ast_interpret(ASTnode root) {
@@ -107,11 +111,27 @@ U32 ast_interpret(ASTnode root) {
 void ast_print(ASTnode root, U16 depth) {
     if (root == NULL)
         return;
-    putchar('|');
+    if (depth == 0) {
+        printf("Program:\n");
+        depth = 1;
+    }
     for (U16 i = 0; i < depth*2; i++)
-        putchar('_');
-
-    printf("Data: %lu\n", root->value);
+        putchar(' ');
+    if (depth > 0) printf("|_");
+    switch (root->type)
+    {
+    case AST_INT_LITERAL: printf("%lu", root->value); break;
+    case AST_ADD: printf(" +"); break;
+    case AST_SUBTRACT: printf(" -"); break;
+    case AST_MULTIPLY: printf(" *"); break;
+    case AST_DIVIDE: printf(" /"); break;
+    
+    
+    default:
+        printf("Unknown Type: %u", root->type);
+        break;
+    }
+    putchar('\n');
     if (root->left != NULL)
         ast_print(root->left, depth + 1);
     if (root->right != NULL)

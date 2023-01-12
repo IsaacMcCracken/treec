@@ -4,7 +4,6 @@
 
 #include "frontend.h"
 
-#define _CRT_SECURE_NO_WARNINGS 1
 
 char* open_file(const char* path);
 
@@ -13,9 +12,10 @@ int main(int argc, const char** argv) {
     if (argc != 0) {
         source = open_file(argv[1]);
         tokenize(source);
-
-
-
+        ASTnode head = binary_expression();
+        U32 num = ast_interpret(head);
+        printf("\nNumber = %lu.\n", num);
+        ast_print(head, 0);
     } else {
         fprintf(stderr, "No input files: bro :(\n");
     }
@@ -47,7 +47,7 @@ char* open_file(const char* path) {
     }
 
     text_buffer[bytesRead] = '\0';
-    // printf("BYTES READ: %zu\n", bytesRead);
+    printf("BYTES READ: %zu\n", bytesRead);
     fclose(file);
     return text_buffer;
 }

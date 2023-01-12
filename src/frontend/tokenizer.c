@@ -22,6 +22,17 @@ const char* token_names[] = {
     "SLASH",
 };
 
+void tokens_print() {
+    for (U32 i = 0; i < tokens.len; i++)
+    {
+        printf("Type: %-10s | ", token_names[tokens.type[i]]);
+        if (i%2==0 && i!=0) {
+            putchar('\n');
+        }
+    }
+    
+}
+
 
 typedef struct {
     U32 start;
@@ -59,17 +70,19 @@ static void skip_whitespace() {
     {
         switch (peek())
         {
-        case ' ':
-        case '\t':
-        case '\r':
+        case ' ':  advance(); break;
+        case '\t': advance(); break;
+        case '\r': advance(); break;
         case '\v': advance(); break;
         case '\n': advance(); scanner.line++; break;
         case '/':
             if (peek_next() == '/') {
-                while (peek() != '\n')
+                while (peek() != '\n' && peek_next() != '\0')
                     advance();
+                advance();
                 scanner.line++;
-            } break;
+            } else return;
+            break;
         default: return;
         }
     }
@@ -116,41 +129,27 @@ static void token_number() {
 }
 
 void tokenize(char* source) {
-    #ifdef TOKEN_DEBUG
-        U32 time_start = (U32)clock();
-    #endif
     scanner_init();
     tokens.source = source;
-    while (peek() != 0)
+    for (;;)
     {
         skip_whitespace();
         scanner.start = scanner.current;
         
         char c = advance();
         if (is_digit(c)) { token_number(); continue; }
-
+        printf("%d\n", scanner.current);
         switch (c) {
             case '+': token_create(TOK_PLUS); continue;
             case '-': token_create(TOK_MINUS); continue;
             case '*': token_create(TOK_STAR);  continue;
             case '/': token_create(TOK_SLASH); continue;
 
-            case '\0': token_create(TOK_EOF); continue;
+            case '\0': token_create(TOK_EOF); return;
             default:
-                // fprintf(stderr, "We do not recognize the char %c.\n", peek());
+                fprintf(stderr, "We do not recognize the char %c.\n", peek());
+                exit(69);
                 continue;
         }
     }
-
-    #ifdef TOKEN_DEBUG
-    U32 time_stop = (U32)clock();
-    printf("\n== Token Count: %03lu ==\n", tokens.len);
-    for (U32 i = 0; i < tokens.len; i++)
-    {
-        printf("[%03lu] Type: %s Start: %03lu length: %03u Line: %03lu.\n", i, token_names[tokens.type[i]], 
-                tokens.start[i], tokens.length[i], tokens.line[i]);
-    }
-    printf("Tokenized %lu lines of code in %lu milliseconds.\n", scanner.line, time_stop - time_start);
-    #endif
-
 }
