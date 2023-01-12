@@ -1,8 +1,8 @@
 debug:
-	clang-cl /Zi src/*.c src/frontend/*.c -o treec.exe -I src/include
+	clang-cl /Zi src/main.c src/frontend/*.c -o treec.exe -I src/include
 	./treec test/notc.tc 
 
-debug_build:
-	clang-cl /Zi src/main.c -o treec.exe src/include
-
+debug_build_run:
+	clang-cl -g src/main.c src/frontend/*.c -o treec.exe -I src/include
+	./treec test/notc.tc
 
